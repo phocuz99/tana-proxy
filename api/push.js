@@ -1,12 +1,9 @@
 export default async function handler(req, res) {
   try {
-    // Debug check
     const token = process.env.TANA_API_TOKEN;
 
     if (!token) {
-      return res.status(500).json({
-        error: "TANA_API_TOKEN missing",
-      });
+      return res.status(500).json({ error: "TANA_API_TOKEN missing" });
     }
 
     if (req.method !== "POST") {
@@ -14,7 +11,6 @@ export default async function handler(req, res) {
     }
 
     const { text } = req.body || {};
-
     if (!text) {
       return res.status(400).json({ error: "Missing 'text' in body" });
     }
@@ -31,8 +27,13 @@ export default async function handler(req, res) {
       }
     );
 
-    const data = await response.json();
-    return res.status(response.status).json(data);
+    // 🔍 Capture raw text instead of forcing JSON
+    const raw = await response.text();
+
+    return res.status(response.status).json({
+      status: response.status,
+      raw,
+    });
 
   } catch (err) {
     return res.status(500).json({
