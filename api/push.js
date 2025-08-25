@@ -1,7 +1,8 @@
 // /api/push.js
-export default async function handler(req, res) {
+module.exports = async (req, res) => {
   if (req.method !== 'POST') {
-    return res.status(405).json({ error: 'Method not allowed' });
+    res.status(405).json({ error: 'Method not allowed' });
+    return;
   }
 
   try {
@@ -20,9 +21,9 @@ export default async function handler(req, res) {
     );
 
     const data = await response.json();
-    return res.status(response.status).json(data);
+    res.status(response.status).json(data);
 
   } catch (err) {
-    return res.status(500).json({ error: err.message });
+    res.status(500).json({ error: err.message });
   }
-}
+};
