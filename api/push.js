@@ -1,4 +1,5 @@
 // /api/push.js
+
 module.exports = async (req, res) => {
   if (req.method !== 'POST') {
     res.status(405).json({ error: 'Method not allowed' });
@@ -6,8 +7,10 @@ module.exports = async (req, res) => {
   }
 
   try {
+    // Get "text" field from request body
     const { text } = req.body;
 
+    // Call Tana Inbox API
     const response = await fetch(
       "https://europe-west1-tanaproduction.cloudfunctions.net/addToInbox",
       {
@@ -20,6 +23,7 @@ module.exports = async (req, res) => {
       }
     );
 
+    // Return Tana API response
     const data = await response.json();
     res.status(response.status).json(data);
 
