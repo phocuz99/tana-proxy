@@ -7,8 +7,17 @@ module.exports = async (req, res) => {
   }
 
   try {
-    // Get "text" field from request body
-    const { text } = req.body;
+    // Parse incoming body safely
+    let body = "";
+
+    // Collect request data
+    for await (const chunk of req) {
+      body += chunk;
+    }
+
+    // Convert to JSON
+    const parsed = JSON.parse(body);
+    const { text } = parsed;
 
     // Call Tana Inbox API
     const response = await fetch(
@@ -23,7 +32,6 @@ module.exports = async (req, res) => {
       }
     );
 
-    // Return Tana API response
     const data = await response.json();
     res.status(response.status).json(data);
 
